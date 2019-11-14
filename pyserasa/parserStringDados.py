@@ -47,26 +47,31 @@ class ParserStringDados(object):
                 and bloco[0:4] != u'N003' and bloco[0:4] != u'A900' \
                 and bloco[0:4] != u'I105':
             nome_classe = nome_classe + "_subtipo" + bloco[4:6]
+
         mod_serializer = __import__('blocosDados', globals(), locals())
-        func = getattr(mod_serializer, nome_classe)
-        bloco_montado = func(nome, bloco)
 
-        if nome == 'N230':
-            arquivo.blocos[0].blocos.append(bloco_montado)
-        elif nome in ['N240', 'I140', 'I220']:
-            arquivo.blocos[1].blocos.append(bloco_montado)
-        elif nome in ['N250', 'I110']:
-            arquivo.blocos[2].blocos.append(bloco_montado)
-        elif nome == 'N270':
-            arquivo.blocos[3].blocos.append(bloco_montado)
-        elif nome == 'I230':
-            arquivo.blocos[4].blocos.append(bloco_montado)
-        elif nome == 'I105':
-            arquivo.blocos[5].blocos.append(bloco_montado)
-        else:
-            arquivo.blocos.append(bloco_montado)
-
-        return arquivo
+        try:
+            func = getattr(mod_serializer, nome_classe)
+            bloco_montado = func(nome, bloco)
+            
+            if nome == 'N230':
+                arquivo.blocos[0].blocos.append(bloco_montado)
+            elif nome in ['N240', 'I140', 'I220']:
+                arquivo.blocos[1].blocos.append(bloco_montado)
+            elif nome in ['N250', 'I110']:
+                arquivo.blocos[2].blocos.append(bloco_montado)
+            elif nome == 'N270':
+                arquivo.blocos[3].blocos.append(bloco_montado)
+            elif nome == 'I230':
+                arquivo.blocos[4].blocos.append(bloco_montado)
+            elif nome == 'I105':
+                arquivo.blocos[5].blocos.append(bloco_montado)
+            else:
+                arquivo.blocos.append(bloco_montado)
+        except:
+            print 'Invalid block', nome_classe
+        finally:
+            return arquivo
 
     def parser_string_dados_retorno(self, string_dados_retorno, arquivo):
         string_dados_retorno = string_dados_retorno[
